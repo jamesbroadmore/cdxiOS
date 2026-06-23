@@ -1,0 +1,161 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Righteous&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    color-scheme: dark;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #08080a;
+    color: #ffffff;
+}
+
+code,
+.mono,
+.font-mono {
+    font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+
+.font-display {
+    font-family: "Inter", system-ui, sans-serif;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+}
+
+.font-righteous {
+    font-family: "Righteous", system-ui, sans-serif !important;
+}
+
+@layer base {
+    :root {
+        --background: 240 6% 4%;
+        --foreground: 0 0% 100%;
+        --card: 240 5% 7%;
+        --card-foreground: 0 0% 100%;
+        --popover: 240 5% 7%;
+        --popover-foreground: 0 0% 100%;
+        --primary: 0 0% 100%;
+        --primary-foreground: 0 0% 5%;
+        --secondary: 240 5% 10%;
+        --secondary-foreground: 0 0% 100%;
+        --muted: 240 5% 10%;
+        --muted-foreground: 240 5% 65%;
+        --accent: 240 5% 10%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 100% 60%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 240 4% 16%;
+        --input: 240 4% 16%;
+        --ring: 225 100% 60%;
+        --radius: 0.125rem;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    html,
+    body,
+    #root {
+        height: 100%;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+    ::selection {
+        background: #3366ff;
+        color: #ffffff;
+    }
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #08080a;
+}
+::-webkit-scrollbar-thumb {
+    background: #27272a;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #3f3f46;
+}
+
+/* Grain texture overlay */
+.grain::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 100;
+}
+
+/* Striped pattern for blocked/unpaid milestones */
+.stripe-block {
+    background-image: repeating-linear-gradient(
+        45deg,
+        #1a1a1d,
+        #1a1a1d 6px,
+        #121214 6px,
+        #121214 12px
+    );
+}
+
+.progress-bar-track {
+    background: #1a1a1d;
+    border: 1px solid #27272a;
+}
+.progress-bar-fill {
+    background: #ffffff;
+    transition: width 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.progress-bar-fill.delayed {
+    background: #ff3333;
+}
+.progress-bar-fill.completed {
+    background: #00ff66;
+}
+
+@layer base {
+    [data-debug-wrapper="true"] {
+        display: contents !important;
+    }
+
+    [data-debug-wrapper="true"] > * {
+        margin-left: inherit;
+        margin-right: inherit;
+        margin-top: inherit;
+        margin-bottom: inherit;
+        padding-left: inherit;
+        padding-right: inherit;
+        padding-top: inherit;
+        padding-bottom: inherit;
+        column-gap: inherit;
+        row-gap: inherit;
+        gap: inherit;
+        border-left-width: inherit;
+        border-right-width: inherit;
+        border-top-width: inherit;
+        border-bottom-width: inherit;
+        border-left-style: inherit;
+        border-right-style: inherit;
+        border-top-style: inherit;
+        border-bottom-style: inherit;
+        border-left-color: inherit;
+        border-right-color: inherit;
+        border-top-color: inherit;
+        border-bottom-color: inherit;
+    }
+}
