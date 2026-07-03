@@ -1,10 +1,8 @@
 {
-  "version": 3,
-  "builds": [
-    { "src": "package.json", "use": "@vercel/next" }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/$1" }
-  ]
+  "buildCommand": "pnpm build",
+  "installCommand": "pnpm install",
+  "devCommand": "pnpm dev",
+  "env": {
+    "NODE_VERSION": "20.x"
+  }
 }
