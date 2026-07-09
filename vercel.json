@@ -1,8 +1,15 @@
 {
+  "framework": "nextjs",
   "buildCommand": "pnpm build",
-  "installCommand": "pnpm install",
   "devCommand": "pnpm dev",
-  "env": {
-    "NODE_VERSION": "20.x"
-  }
+  "installCommand": "pnpm install",
+  "env": [
+    "MONGODB_URI",
+    "JWT_SECRET",
+    "ANTHROPIC_API_KEY",
+    "STRIPE_SECRET_KEY",
+    "STRIPE_PUBLISHABLE_KEY",
+    "NEXT_PUBLIC_APP_URL",
+    "NODE_VERSION"
+  ]
 }
