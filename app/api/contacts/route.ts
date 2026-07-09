@@ -1,11 +1,10 @@
-import { connectDB } from '@/lib/db';
-import { Contact } from '@/lib/models';
+import { getSql } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const createSchema = z.object({
-  client_id: z.string().min(1),
+  client_id: z.string().uuid(),
   name: z.string().min(1),
   email: z.string().email(),
   phone: z.string().optional(),
@@ -14,7 +13,6 @@ const createSchema = z.object({
 
 export async function GET(req: NextRequest) {
   try {
-    await connectDB();
     const user = getAuthUser(req);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -23,14 +21,22 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const clientId = searchParams.get('client_id');
 
-    let query: any = {};
-    if (clientId) {
-      query.client_id = clientId;
-    }
+    const sql = getSql();
+    // Only return contacts belonging to clients owned by this user.
+    const contacts = clientId
+      ? await sql`
+          SELECT co.* FROM contacts co
+          JOIN clients cl ON cl.id = co.client_id
+          WHERE cl.user_id = ${user.id} AND co.client_id = ${clientId}
+          ORDER BY co.created_at DESC`
+      : await sql`
+          SELECT co.* FROM contacts co
+          JOIN clients cl ON cl.id = co.client_id
+          WHERE cl.user_id = ${user.id}
+          ORDER BY co.created_at DESC`;
 
-    const contacts = await Contact.find(query).sort({ created_at: -1 });
     return NextResponse.json(contacts);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[cdxi] Get contacts error:', error);
     return NextResponse.json({ error: 'Failed to fetch contacts' }, { status: 500 });
   }
@@ -38,7 +44,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    await connectDB();
     const user = getAuthUser(req);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -47,14 +52,25 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const data = createSchema.parse(body);
 
-    const contact = new Contact(data);
-    await contact.save();
-    return NextResponse.json(contact, { status: 201 });
-  } catch (error: any) {
-    console.error('[cdxi] Create contact error:', error);
-    if (error.name === 'ZodError') {
+    const sql = getSql();
+
+    // Ensure the client belongs to this user.
+    const owned = await sql`
+      SELECT id FROM clients WHERE id = ${data.client_id} AND user_id = ${user.id}`;
+    if (owned.length === 0) {
+      return NextResponse.json({ error: 'Client not found' }, { status: 404 });
+    }
+
+    const rows = await sql`
+      INSERT INTO contacts (client_id, name, email, phone, role)
+      VALUES (${data.client_id}, ${data.name}, ${data.email}, ${data.phone ?? ''}, ${data.role ?? ''})
+      RETURNING *`;
+    return NextResponse.json(rows[0], { status: 201 });
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
     }
+    console.error('[cdxi] Create contact error:', error);
     return NextResponse.json({ error: 'Failed to create contact' }, { status: 500 });
   }
 }

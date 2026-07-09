@@ -6,16 +6,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { api } from '@/lib/api-client'
+import type { Project } from '@/lib/types'
 import { Plus } from 'lucide-react'
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<any[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function loadProjects() {
       try {
-        const data = await api.get('/api/projects')
+        const data = await api.get<Project[]>('/api/projects')
         setProjects(data)
       } catch (error) {
         console.error('Failed to load projects:', error)
@@ -34,11 +35,9 @@ export default function ProjectsPage() {
           <h1 className="text-3xl font-bold text-foreground">Projects</h1>
           <p className="text-muted-foreground mt-1">Manage all active and completed projects</p>
         </div>
-        <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-          <Link href="/projects/new">
-            <Plus className="w-4 h-4 mr-2" />
-            New Project
-          </Link>
+        <Button nativeButton={false} render={<Link href="/projects/new" />}>
+          <Plus data-icon="inline-start" />
+          New Project
         </Button>
       </div>
 
@@ -57,8 +56,8 @@ export default function ProjectsPage() {
           ) : projects.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">No projects yet. Create your first project to get started.</p>
-              <Button asChild>
-                <Link href="/projects/new">Create Project</Link>
+              <Button nativeButton={false} render={<Link href="/projects/new" />}>
+                Create Project
               </Button>
             </div>
           ) : (
@@ -69,7 +68,9 @@ export default function ProjectsPage() {
                     <div className="flex-1">
                       <h3 className="font-medium text-foreground">{project.name}</h3>
                       <p className="text-sm text-muted-foreground mt-1">{project.description}</p>
-                      {project.budget > 0 && <p className="text-xs text-accent mt-1">${project.budget.toLocaleString()}</p>}
+                      {Number(project.budget) > 0 && (
+                        <p className="text-xs text-accent mt-1">${Number(project.budget).toLocaleString()}</p>
+                      )}
                     </div>
                     <Badge>{project.status}</Badge>
                   </div>

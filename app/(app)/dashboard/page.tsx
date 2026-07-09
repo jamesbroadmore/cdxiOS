@@ -6,33 +6,40 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { api } from '@/lib/api-client'
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { Users, Briefcase, CheckSquare, DollarSign, TrendingUp, Plus } from 'lucide-react'
+import type { Client, Project } from '@/lib/types'
+import { Users, Briefcase, CheckSquare, DollarSign, Plus, type LucideIcon } from 'lucide-react'
+
+interface StatCardProps {
+  icon: LucideIcon
+  label: string
+  value: string | number
+  href: string
+}
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({
     clients: 0,
     projects: 0,
-    tasks: 0,
-    revenue: 0,
+    activeProjects: 0,
+    budget: 0,
   })
   const [loading, setLoading] = useState(true)
-  const [recentClients, setRecentClients] = useState<any[]>([])
-  const [recentProjects, setRecentProjects] = useState<any[]>([])
+  const [recentClients, setRecentClients] = useState<Client[]>([])
+  const [recentProjects, setRecentProjects] = useState<Project[]>([])
 
   useEffect(() => {
     async function loadData() {
       try {
         const [clients, projects] = await Promise.all([
-          api.get('/api/clients'),
-          api.get('/api/projects'),
+          api.get<Client[]>('/api/clients'),
+          api.get<Project[]>('/api/projects'),
         ])
 
         setStats({
           clients: clients.length,
           projects: projects.length,
-          tasks: 0,
-          revenue: 0,
+          activeProjects: projects.filter((p) => p.status === 'active').length,
+          budget: projects.reduce((sum, p) => sum + (Number(p.budget) || 0), 0),
         })
 
         setRecentClients(clients.slice(0, 5))
@@ -47,7 +54,7 @@ export default function DashboardPage() {
     loadData()
   }, [])
 
-  const StatCard = ({ icon: Icon, label, value, href }: any) => (
+  const StatCard = ({ icon: Icon, label, value, href }: StatCardProps) => (
     <Link href={href}>
       <Card className="hover:border-primary/50 hover:shadow-lg transition cursor-pointer bg-card border-border">
         <CardContent className="pt-6">
@@ -72,17 +79,17 @@ export default function DashboardPage() {
           <p className="text-muted-foreground mt-1">Welcome back to your agency</p>
         </div>
         <div className="flex gap-2">
-          <Button asChild variant="outline" className="border-border hover:bg-card">
-            <Link href="/clients/new">
-              <Plus className="w-4 h-4 mr-2" />
-              New Client
-            </Link>
+          <Button
+            variant="outline"
+            nativeButton={false}
+            render={<Link href="/clients/new" />}
+          >
+            <Plus data-icon="inline-start" />
+            New Client
           </Button>
-          <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link href="/projects/new">
-              <Plus className="w-4 h-4 mr-2" />
-              New Project
-            </Link>
+          <Button nativeButton={false} render={<Link href="/projects/new" />}>
+            <Plus data-icon="inline-start" />
+            New Project
           </Button>
         </div>
       </div>
@@ -103,14 +110,14 @@ export default function DashboardPage() {
         />
         <StatCard
           icon={CheckSquare}
-          label="Tasks Completed"
-          value={stats.tasks}
+          label="Projects In Progress"
+          value={stats.activeProjects}
           href="/tasks"
         />
         <StatCard
           icon={DollarSign}
-          label="Revenue (30d)"
-          value={`$${(stats.revenue || 0).toLocaleString()}`}
+          label="Total Project Budget"
+          value={`$${stats.budget.toLocaleString()}`}
           href="/billing"
         />
       </div>
@@ -157,37 +164,42 @@ export default function DashboardPage() {
             <CardTitle>Quick Stats</CardTitle>
             <CardDescription>Your performance metrics</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Projects on track</span>
-                <span className="text-sm font-semibold text-foreground">{stats.projects}%</span>
+                <span className="text-sm text-muted-foreground">Active projects</span>
+                <span className="text-sm font-semibold text-foreground">
+                  {stats.activeProjects} of {stats.projects}
+                </span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-primary h-2 rounded-full" style={{ width: `${Math.min(stats.projects * 20, 100)}%` }} />
+                <div
+                  className="bg-primary h-2 rounded-full transition-all"
+                  style={{
+                    width: `${stats.projects > 0 ? Math.round((stats.activeProjects / stats.projects) * 100) : 0}%`,
+                  }}
+                />
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Client satisfaction</span>
-                <span className="text-sm font-semibold text-foreground">95%</span>
+                <span className="text-sm text-muted-foreground">Active clients</span>
+                <span className="text-sm font-semibold text-foreground">
+                  {recentClients.filter((c) => c.status === 'active').length} of {stats.clients}
+                </span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-accent h-2 rounded-full" style={{ width: '95%' }} />
+                <div
+                  className="bg-accent h-2 rounded-full transition-all"
+                  style={{
+                    width: `${stats.clients > 0 ? Math.round((recentClients.filter((c) => c.status === 'active').length / stats.clients) * 100) : 0}%`,
+                  }}
+                />
               </div>
             </div>
             <div className="border-t border-border pt-4">
-              <p className="text-xs text-muted-foreground mb-3">Team collaboration</p>
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 border-2 border-card flex items-center justify-center text-xs text-white font-bold"
-                  >
-                    {i}
-                  </div>
-                ))}
-              </div>
+              <p className="text-xs text-muted-foreground mb-1">Total pipeline value</p>
+              <p className="text-2xl font-bold text-foreground">${stats.budget.toLocaleString()}</p>
             </div>
           </CardContent>
         </Card>

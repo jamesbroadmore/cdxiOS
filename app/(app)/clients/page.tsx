@@ -6,16 +6,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { api } from '@/lib/api-client'
+import type { Client } from '@/lib/types'
 import { Plus, Mail, Phone } from 'lucide-react'
 
 export default function ClientsPage() {
-  const [clients, setClients] = useState<any[]>([])
+  const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function loadClients() {
       try {
-        const data = await api.get('/api/clients')
+        const data = await api.get<Client[]>('/api/clients')
         setClients(data)
       } catch (error) {
         console.error('Failed to load clients:', error)
@@ -34,11 +35,9 @@ export default function ClientsPage() {
           <h1 className="text-3xl font-bold text-foreground">Clients</h1>
           <p className="text-muted-foreground mt-1">Manage all your client relationships</p>
         </div>
-        <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-          <Link href="/clients/new">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Client
-          </Link>
+        <Button nativeButton={false} render={<Link href="/clients/new" />}>
+          <Plus data-icon="inline-start" />
+          Add Client
         </Button>
       </div>
 
@@ -57,8 +56,8 @@ export default function ClientsPage() {
           ) : clients.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">No clients yet. Add your first client to get started.</p>
-              <Button asChild>
-                <Link href="/clients/new">Add Client</Link>
+              <Button nativeButton={false} render={<Link href="/clients/new" />}>
+                Add Client
               </Button>
             </div>
           ) : (

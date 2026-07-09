@@ -1,13 +1,43 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { getToken, clearToken, getMe } from '@/lib/client-auth'
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from '@/components/ui/sidebar'
+import { getToken, clearToken, getMe, type User } from '@/lib/client-auth'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { LucideIcon, ChevronDown, LayoutDashboard, Users, Briefcase, CheckSquare, MessageSquare, DollarSign, Settings, LogOut } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  type LucideIcon,
+  ChevronsUpDown,
+  LayoutDashboard,
+  Users,
+  Briefcase,
+  CheckSquare,
+  Sparkles,
+  DollarSign,
+  Settings,
+  LogOut,
+} from 'lucide-react'
 
 interface NavItem {
   label: string
@@ -20,7 +50,7 @@ const navItems: NavItem[] = [
   { label: 'Clients', href: '/clients', icon: Users },
   { label: 'Projects', href: '/projects', icon: Briefcase },
   { label: 'Tasks', href: '/tasks', icon: CheckSquare },
-  { label: 'Copilot', href: '/copilot', icon: MessageSquare },
+  { label: 'Copilot', href: '/copilot', icon: Sparkles },
   { label: 'Billing', href: '/billing', icon: DollarSign },
   { label: 'Settings', href: '/settings', icon: Settings },
 ]
@@ -31,8 +61,9 @@ export default function AppLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
+  const pathname = usePathname()
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     const token = getToken()
@@ -41,7 +72,6 @@ export default function AppLayout({
       return
     }
 
-    // Verify token and fetch user
     getMe(token)
       .then(setUser)
       .catch(() => {
@@ -53,10 +83,14 @@ export default function AppLayout({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <span className="font-righteous text-3xl text-primary">cdxi</span>
+          <div
+            className="size-6 animate-spin rounded-full border-2 border-muted border-t-primary"
+            role="status"
+            aria-label="Loading"
+          />
         </div>
       </div>
     )
@@ -67,53 +101,68 @@ export default function AppLayout({
     router.push('/login')
   }
 
+  const currentPage = navItems.find((item) => pathname.startsWith(item.href))
+
   return (
-    <div className="flex h-screen bg-background">
-      <Sidebar className="border-r border-border bg-sidebar">
-        <SidebarHeader className="border-b border-sidebar-border px-6 py-4">
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarHeader className="px-4 py-4">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">OS</span>
-            </div>
-            <div>
-              <p className="font-bold text-sidebar-foreground text-sm">cdxi</p>
-              <p className="text-xs text-sidebar-foreground/60">Operating System</p>
-            </div>
+            <span className="font-righteous text-2xl text-sidebar-foreground">
+              cdxi
+            </span>
+            <span className="rounded bg-sidebar-primary px-1.5 py-0.5 text-xs font-semibold text-sidebar-primary-foreground">
+              OS
+            </span>
           </Link>
         </SidebarHeader>
 
-        <SidebarContent className="px-2 py-4">
+        <SidebarContent className="px-2 py-2">
           <SidebarMenu>
             {navItems.map((item) => (
               <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton asChild>
-                  <Link href={item.href} className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-sidebar-accent/20 transition">
-                    <item.icon className="w-5 h-5" />
-                    <span>{item.label}</span>
-                  </Link>
+                <SidebarMenuButton
+                  render={<Link href={item.href} />}
+                  isActive={pathname.startsWith(item.href)}
+                >
+                  <item.icon />
+                  <span>{item.label}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
         </SidebarContent>
 
-        <SidebarFooter className="border-t border-sidebar-border p-4">
+        <SidebarFooter className="p-2">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="w-full justify-between px-3 py-2 h-auto text-sidebar-foreground hover:bg-sidebar-accent/20"
-              >
-                <div className="text-left">
-                  <p className="text-sm font-medium">{user?.full_name}</p>
-                  <p className="text-xs text-sidebar-foreground/60">{user?.email}</p>
-                </div>
-                <ChevronDown className="w-4 h-4" />
-              </Button>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  className="h-auto w-full justify-between px-3 py-2 text-sidebar-foreground"
+                />
+              }
+            >
+              <div className="min-w-0 text-left">
+                <p className="truncate text-sm font-medium">
+                  {user?.full_name}
+                </p>
+                <p className="truncate text-xs text-sidebar-foreground/60">
+                  {user?.email}
+                </p>
+              </div>
+              <ChevronsUpDown data-icon="inline-end" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem onClick={handleLogout} className="text-destructive">
-                <LogOut className="w-4 h-4 mr-2" />
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem render={<Link href="/settings" />}>
+                <Settings />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+                <LogOut />
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -121,12 +170,16 @@ export default function AppLayout({
         </SidebarFooter>
       </Sidebar>
 
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="border-b border-border bg-card px-6 py-4 flex items-center">
+      <SidebarInset>
+        <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4">
           <SidebarTrigger />
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          <h1 className="text-sm font-medium text-muted-foreground">
+            {currentPage?.label ?? 'cdxi OS'}
+          </h1>
         </header>
         <div className="flex-1 overflow-auto">{children}</div>
-      </main>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

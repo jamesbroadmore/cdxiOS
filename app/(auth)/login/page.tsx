@@ -25,8 +25,8 @@ export default function LoginPage() {
       const { access_token } = await loginUser(email, password)
       setToken(access_token)
       router.push('/dashboard')
-    } catch (err: any) {
-      setError(err.message || 'Login failed')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Login failed')
     } finally {
       setLoading(false)
     }
@@ -36,8 +36,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-            cdxi | OS
+          <h1 className="font-righteous text-4xl text-foreground">
+            cdxi <span className="text-primary">OS</span>
           </h1>
           <p className="text-muted-foreground mt-2">AI Agency Operating System</p>
         </div>
@@ -99,9 +99,6 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          Demo: admin@cdxi.io / password
-        </p>
       </div>
     </div>
   )
