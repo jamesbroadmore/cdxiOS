@@ -96,9 +96,13 @@ export default function CopilotPage() {
       setMessages((prev) => [...prev, { role: 'assistant', content: response.message, timestamp: new Date() }])
     } catch (error) {
       console.error('Failed to send message:', error)
+      const detail =
+        error instanceof Error && error.message !== 'Chat failed'
+          ? error.message
+          : 'Sorry, I encountered an error processing your message.'
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: 'Sorry, I encountered an error processing your message.', timestamp: new Date() },
+        { role: 'assistant', content: detail, timestamp: new Date() },
       ])
     } finally {
       setSending(false)

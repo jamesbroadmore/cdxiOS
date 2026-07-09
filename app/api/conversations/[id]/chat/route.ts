@@ -79,6 +79,19 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
     }
     console.error('[cdxi] Chat error:', error);
+
+    // Surface actionable AI Gateway errors (e.g. billing/verification) to the client.
+    const message = error instanceof Error ? error.message : '';
+    if (message.includes('credit card') || message.includes('customer_verification')) {
+      return NextResponse.json(
+        {
+          error:
+            'AI Gateway is not yet activated for this Vercel account. Add a payment method in the Vercel dashboard (AI tab) to unlock free credits.',
+        },
+        { status: 502 },
+      );
+    }
+
     return NextResponse.json({ error: 'Chat failed' }, { status: 500 });
   }
 }
