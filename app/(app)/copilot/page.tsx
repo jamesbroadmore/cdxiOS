@@ -43,8 +43,8 @@ export default function CopilotPage() {
     async function loadData() {
       try {
         const [agentsData, conversationsData] = await Promise.all([
-          api.get('/api/agents'),
-          api.get('/api/conversations'),
+          api.get<Agent[]>('/api/agents'),
+          api.get<Conversation[]>('/api/conversations'),
         ])
         setAgents(agentsData)
         setConversations(conversationsData)
@@ -67,7 +67,7 @@ export default function CopilotPage() {
 
   async function startConversation(agent: Agent) {
     try {
-      const conversation = await api.post('/api/conversations', {
+      const conversation = await api.post<Conversation>('/api/conversations', {
         agent_id: agent.id,
         title: `Chat with ${agent.name}`,
       })
@@ -89,7 +89,7 @@ export default function CopilotPage() {
     setMessages((prev) => [...prev, { role: 'user', content: userMessage, timestamp: new Date() }])
 
     try {
-      const response = await api.post(`/api/conversations/${currentConversation.id}/chat`, {
+      const response = await api.post<{ message: string }>(`/api/conversations/${currentConversation.id}/chat`, {
         content: userMessage,
       })
 
@@ -211,7 +211,11 @@ export default function CopilotPage() {
                   placeholder="Type your message..."
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && !sending && sendMessage()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.nativeEvent.isComposing && e.keyCode !== 229 && !sending) {
+                      sendMessage()
+                    }
+                  }}
                   disabled={sending}
                   className="bg-card border-border"
                 />

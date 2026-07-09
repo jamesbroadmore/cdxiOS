@@ -15,7 +15,7 @@ export default function ProjectsPage() {
   useEffect(() => {
     async function loadProjects() {
       try {
-        const data = await api.get('/api/projects')
+        const data = await api.get<any[]>('/api/projects')
         setProjects(data)
       } catch (error) {
         console.error('Failed to load projects:', error)
@@ -34,11 +34,9 @@ export default function ProjectsPage() {
           <h1 className="text-3xl font-bold text-foreground">Projects</h1>
           <p className="text-muted-foreground mt-1">Manage all active and completed projects</p>
         </div>
-        <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-          <Link href="/projects/new">
-            <Plus className="w-4 h-4 mr-2" />
-            New Project
-          </Link>
+        <Button nativeButton={false} render={<Link href="/projects/new" />}>
+          <Plus data-icon="inline-start" />
+          New Project
         </Button>
       </div>
 
@@ -57,8 +55,8 @@ export default function ProjectsPage() {
           ) : projects.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">No projects yet. Create your first project to get started.</p>
-              <Button asChild>
-                <Link href="/projects/new">Create Project</Link>
+              <Button nativeButton={false} render={<Link href="/projects/new" />}>
+                Create Project
               </Button>
             </div>
           ) : (

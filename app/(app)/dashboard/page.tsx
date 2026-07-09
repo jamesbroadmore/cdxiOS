@@ -24,8 +24,8 @@ export default function DashboardPage() {
     async function loadData() {
       try {
         const [clients, projects] = await Promise.all([
-          api.get('/api/clients'),
-          api.get('/api/projects'),
+          api.get<any[]>('/api/clients'),
+          api.get<any[]>('/api/projects'),
         ])
 
         setStats({
@@ -72,17 +72,17 @@ export default function DashboardPage() {
           <p className="text-muted-foreground mt-1">Welcome back to your agency</p>
         </div>
         <div className="flex gap-2">
-          <Button asChild variant="outline" className="border-border hover:bg-card">
-            <Link href="/clients/new">
-              <Plus className="w-4 h-4 mr-2" />
-              New Client
-            </Link>
+          <Button
+            variant="outline"
+            nativeButton={false}
+            render={<Link href="/clients/new" />}
+          >
+            <Plus data-icon="inline-start" />
+            New Client
           </Button>
-          <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link href="/projects/new">
-              <Plus className="w-4 h-4 mr-2" />
-              New Project
-            </Link>
+          <Button nativeButton={false} render={<Link href="/projects/new" />}>
+            <Plus data-icon="inline-start" />
+            New Project
           </Button>
         </div>
       </div>
@@ -182,7 +182,7 @@ export default function DashboardPage() {
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 border-2 border-card flex items-center justify-center text-xs text-white font-bold"
+                    className="size-8 rounded-full bg-primary border-2 border-card flex items-center justify-center text-xs text-primary-foreground font-bold"
                   >
                     {i}
                   </div>

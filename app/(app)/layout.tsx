@@ -122,13 +122,11 @@ export default function AppLayout({
             {navItems.map((item) => (
               <SidebarMenuItem key={item.href}>
                 <SidebarMenuButton
-                  asChild
+                  render={<Link href={item.href} />}
                   isActive={pathname.startsWith(item.href)}
                 >
-                  <Link href={item.href}>
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </Link>
+                  <item.icon />
+                  <span>{item.label}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
@@ -137,30 +135,30 @@ export default function AppLayout({
 
         <SidebarFooter className="p-2">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="h-auto w-full justify-between px-3 py-2 text-sidebar-foreground"
-              >
-                <div className="min-w-0 text-left">
-                  <p className="truncate text-sm font-medium">
-                    {user?.full_name}
-                  </p>
-                  <p className="truncate text-xs text-sidebar-foreground/60">
-                    {user?.email}
-                  </p>
-                </div>
-                <ChevronsUpDown data-icon="inline-end" />
-              </Button>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  className="h-auto w-full justify-between px-3 py-2 text-sidebar-foreground"
+                />
+              }
+            >
+              <div className="min-w-0 text-left">
+                <p className="truncate text-sm font-medium">
+                  {user?.full_name}
+                </p>
+                <p className="truncate text-xs text-sidebar-foreground/60">
+                  {user?.email}
+                </p>
+              </div>
+              <ChevronsUpDown data-icon="inline-end" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/settings">
-                  <Settings />
-                  Settings
-                </Link>
+              <DropdownMenuItem render={<Link href="/settings" />}>
+                <Settings />
+                Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onClick={handleLogout}>
