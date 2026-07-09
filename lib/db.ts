@@ -1,38 +1,20 @@
-import mongoose from 'mongoose';
+import { neon } from '@neondatabase/serverless';
 
-const MONGODB_URI = process.env.MONGODB_URI || '';
+const DATABASE_URL = process.env.DATABASE_URL || '';
 
-if (!MONGODB_URI && process.env.NODE_ENV !== 'development') {
-  console.warn('MONGODB_URI not defined - database operations will fail at runtime');
+if (!DATABASE_URL) {
+  console.warn('DATABASE_URL not defined - database operations will fail at runtime');
 }
 
-let cached = global.mongoose || { conn: null, promise: null };
+// Lazily-initialized singleton SQL client (HTTP-based, serverless-friendly).
+let _sql: ReturnType<typeof neon> | null = null;
 
-export async function connectDB() {
-  if (!MONGODB_URI) {
-    throw new Error('MONGODB_URI environment variable is not set');
+export function getSql() {
+  if (!DATABASE_URL) {
+    throw new Error('DATABASE_URL environment variable is not set');
   }
-
-  if (cached.conn) {
-    return cached.conn;
+  if (!_sql) {
+    _sql = neon(DATABASE_URL);
   }
-
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
-  }
-
-  try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
-  }
-
-  return cached.conn;
+  return _sql;
 }

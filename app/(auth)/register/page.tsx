@@ -49,8 +49,8 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-            cdxi | OS
+          <h1 className="font-righteous text-4xl text-foreground">
+            cdxi <span className="text-primary">OS</span>
           </h1>
           <p className="text-muted-foreground mt-2">Create your account</p>
         </div>

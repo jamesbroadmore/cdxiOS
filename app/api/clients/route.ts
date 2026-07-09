@@ -1,5 +1,4 @@
-import { connectDB } from '@/lib/db';
-import { Client } from '@/lib/models';
+import { getSql } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -16,15 +15,16 @@ const createSchema = z.object({
 
 export async function GET(req: NextRequest) {
   try {
-    await connectDB();
     const user = getAuthUser(req);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const clients = await Client.find({ user_id: user.id }).sort({ created_at: -1 });
+    const sql = getSql();
+    const clients = await sql`
+      SELECT * FROM clients WHERE user_id = ${user.id} ORDER BY created_at DESC`;
     return NextResponse.json(clients);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[cdxi] Get clients error:', error);
     return NextResponse.json({ error: 'Failed to fetch clients' }, { status: 500 });
   }
@@ -32,7 +32,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    await connectDB();
     const user = getAuthUser(req);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -41,18 +40,21 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const data = createSchema.parse(body);
 
-    const client = new Client({
-      user_id: user.id,
-      ...data,
-    });
-
-    await client.save();
-    return NextResponse.json(client, { status: 201 });
-  } catch (error: any) {
-    console.error('[cdxi] Create client error:', error);
-    if (error.name === 'ZodError') {
+    const sql = getSql();
+    const rows = await sql`
+      INSERT INTO clients (user_id, name, email, phone, company, industry, status, notes)
+      VALUES (
+        ${user.id}, ${data.name}, ${data.email}, ${data.phone ?? ''},
+        ${data.company ?? ''}, ${data.industry ?? ''},
+        ${data.status ?? 'prospect'}, ${data.notes ?? ''}
+      )
+      RETURNING *`;
+    return NextResponse.json(rows[0], { status: 201 });
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
     }
+    console.error('[cdxi] Create client error:', error);
     return NextResponse.json({ error: 'Failed to create client' }, { status: 500 });
   }
 }

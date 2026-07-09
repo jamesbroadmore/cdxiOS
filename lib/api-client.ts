@@ -1,6 +1,7 @@
 import { getToken } from './client-auth';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+// API routes are same-origin; use relative URLs so it works in every environment.
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export class APIClient {
   private baseUrl: string;

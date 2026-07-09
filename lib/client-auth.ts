@@ -14,7 +14,8 @@ export interface AuthContextType {
   isAuthenticated: boolean;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+// API routes are same-origin; use relative URLs so it works in every environment.
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export async function loginUser(email: string, password: string): Promise<{ user: User; access_token: string }> {
   const res = await fetch(`${API_URL}/api/auth/login`, {
