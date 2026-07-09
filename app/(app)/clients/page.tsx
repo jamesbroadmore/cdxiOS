@@ -6,16 +6,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { api } from '@/lib/api-client'
+import type { Client } from '@/lib/types'
 import { Plus, Mail, Phone } from 'lucide-react'
 
 export default function ClientsPage() {
-  const [clients, setClients] = useState<any[]>([])
+  const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function loadClients() {
       try {
-        const data = await api.get<any[]>('/api/clients')
+        const data = await api.get<Client[]>('/api/clients')
         setClients(data)
       } catch (error) {
         console.error('Failed to load clients:', error)

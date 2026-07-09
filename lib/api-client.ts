@@ -49,14 +49,14 @@ export class APIClient {
     return this.request<T>(endpoint, { method: 'GET' });
   }
 
-  post<T>(endpoint: string, data?: any) {
+  post<T>(endpoint: string, data?: unknown) {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
-  patch<T>(endpoint: string, data?: any) {
+  patch<T>(endpoint: string, data?: unknown) {
     return this.request<T>(endpoint, {
       method: 'PATCH',
       body: data ? JSON.stringify(data) : undefined,
