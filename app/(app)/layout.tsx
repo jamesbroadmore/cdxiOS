@@ -85,7 +85,7 @@ export default function AppLayout({
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
-          <span className="font-righteous text-3xl text-primary">cdxi</span>
+          <span className="font-righteous text-3xl font-bold text-white">cdxi</span>
           <div
             className="size-6 animate-spin rounded-full border-2 border-muted border-t-primary"
             role="status"
@@ -108,7 +108,7 @@ export default function AppLayout({
       <Sidebar>
         <SidebarHeader className="px-4 py-4">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="font-righteous text-2xl text-sidebar-foreground">
+            <span className="font-righteous text-2xl font-bold text-white">
               cdxi
             </span>
             <span className="rounded bg-sidebar-primary px-1.5 py-0.5 text-xs font-semibold text-sidebar-primary-foreground">

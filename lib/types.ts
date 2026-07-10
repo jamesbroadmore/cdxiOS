@@ -37,6 +37,26 @@ export interface Contact {
   created_at: string
 }
 
+export interface Task {
+  id: string
+  user_id: string
+  project_id: string
+  title: string
+  description: string
+  status: 'todo' | 'in_progress' | 'done'
+  priority: 'low' | 'medium' | 'high'
+  due_date: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Agent extends AgentSummary {
+  system_prompt: string
+  tools: string[]
+  created_at: string
+  updated_at: string
+}
+
 export interface AgentSummary {
   id: string
   name: string

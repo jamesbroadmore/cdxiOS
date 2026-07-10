@@ -15,7 +15,7 @@ export default function Page() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background">
       <div className="flex flex-col items-center gap-4">
-        <span className="text-3xl font-bold tracking-tight text-primary">cdxi</span>
+        <span className="font-righteous text-3xl font-bold text-white">cdxi</span>
         <div
           className="size-6 animate-spin rounded-full border-2 border-muted border-t-primary"
           role="status"

@@ -64,6 +64,7 @@ async function main() {
   await sql`
     CREATE TABLE IF NOT EXISTS tasks (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
       title TEXT NOT NULL,
       description TEXT NOT NULL DEFAULT '',
@@ -116,6 +117,7 @@ async function main() {
   await sql`CREATE INDEX IF NOT EXISTS idx_clients_user ON clients(user_id)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_contacts_client ON contacts(client_id)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_projects_user ON projects(user_id)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_tasks_user ON tasks(user_id)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_tasks_project ON tasks(project_id)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_conversations_user ON conversations(user_id)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_invoices_user ON invoices(user_id)`;

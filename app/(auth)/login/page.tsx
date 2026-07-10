@@ -36,8 +36,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="font-righteous text-4xl text-foreground">
-            cdxi <span className="text-primary">OS</span>
+          <h1 className="font-righteous text-4xl font-bold text-white">
+            cdxi <span className="text-white">OS</span>
           </h1>
           <p className="text-muted-foreground mt-2">AI Agency Operating System</p>
         </div>
