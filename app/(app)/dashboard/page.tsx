@@ -57,13 +57,13 @@ export default function DashboardPage() {
   const StatCard = ({ icon: Icon, label, value, href }: StatCardProps) => (
     <Link href={href}>
       <Card className="hover:border-primary/50 hover:shadow-lg transition cursor-pointer bg-card border-border">
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
+        <CardContent className="pt-4 sm:pt-6">
+          <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{label}</p>
-              <p className="text-3xl font-bold text-foreground mt-2">{value}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">{label}</p>
+              <p className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mt-1 sm:mt-2">{value}</p>
             </div>
-            <Icon className="w-12 h-12 text-primary/20" />
+            <Icon className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-primary/20 flex-shrink-0" />
           </div>
         </CardContent>
       </Card>
@@ -71,22 +71,22 @@ export default function DashboardPage() {
   )
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Welcome back to your agency</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Welcome back to your agency</p>
         </div>
-        <div className="flex gap-2">
-          <Link href="/clients/new">
-            <Button variant="outline">
+        <div className="flex gap-2 w-full sm:w-auto flex-col sm:flex-row">
+          <Link href="/clients/new" className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full">
               <Plus data-icon="inline-start" />
               New Client
             </Button>
           </Link>
-          <Link href="/projects/new">
-            <Button>
+          <Link href="/projects/new" className="w-full sm:w-auto">
+            <Button className="w-full">
               <Plus data-icon="inline-start" />
               New Project
             </Button>
@@ -95,7 +95,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           icon={Users}
           label="Total Clients"

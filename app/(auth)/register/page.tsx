@@ -46,13 +46,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="font-righteous text-4xl font-bold text-white">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
+      <div className="w-full max-w-sm sm:max-w-md">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="font-righteous text-2xl sm:text-3xl md:text-4xl font-bold text-white">
             cdxi <span className="text-white">OS</span>
           </h1>
-          <p className="text-muted-foreground mt-2">Create your account</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-2">Create your account</p>
         </div>
 
         <Card className="border-border bg-card">

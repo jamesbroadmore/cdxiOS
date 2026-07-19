@@ -164,14 +164,12 @@ export default function TasksPage() {
     s === 'done' ? 'default' : s === 'in_progress' ? 'secondary' : 'outline'
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Tasks</h1>
-          <p className="text-muted-foreground mt-1">Organise and track your team&apos;s work</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Tasks</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Track and manage your project tasks</p>
         </div>
-
-        {/* Create dialog */}
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger render={<Button />}>
             <Plus data-icon="inline-start" />
@@ -244,29 +242,30 @@ export default function TasksPage() {
               No tasks yet. Create one to get started.
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2 sm:space-y-3">
               {tasks.map((task) => (
                 <div
                   key={task.id}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/40 transition border border-border/50"
+                  className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg hover:bg-muted/40 transition border border-border/50"
                 >
                   <Checkbox
                     checked={task.status === 'done'}
                     onCheckedChange={() => toggleTaskStatus(task)}
+                    className="flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <p
-                      className={`font-medium text-sm truncate ${
+                      className={`font-medium text-xs sm:text-sm truncate ${
                         task.status === 'done' ? 'line-through text-muted-foreground' : 'text-foreground'
                       }`}
                     >
                       {task.title}
                     </p>
-                    <div className="flex gap-2 mt-0.5 text-xs text-muted-foreground">
+                    <div className="flex gap-2 mt-0.5 text-xs text-muted-foreground flex-wrap">
                       <span className="truncate">{task.projectName}</span>
                       {task.due_date && (
                         <>
-                          <span>·</span>
+                          <span className="hidden sm:inline">·</span>
                           <span>Due {new Date(task.due_date).toLocaleDateString()}</span>
                         </>
                       )}

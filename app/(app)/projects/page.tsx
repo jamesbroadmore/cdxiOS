@@ -29,14 +29,14 @@ export default function ProjectsPage() {
   }, [])
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Projects</h1>
-          <p className="text-muted-foreground mt-1">Manage all active and completed projects</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Projects</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Manage all active and completed projects</p>
         </div>
-        <Link href="/projects/new">
-          <Button>
+        <Link href="/projects/new" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto">
             <Plus data-icon="inline-start" />
             New Project
           </Button>
@@ -63,18 +63,18 @@ export default function ProjectsPage() {
               </Link>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {projects.map((project) => (
-                <div key={project.id} className="p-4 rounded-lg hover:bg-muted/50 transition border border-border/50">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-medium text-foreground">{project.name}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">{project.description}</p>
+                <div key={project.id} className="p-3 sm:p-4 rounded-lg hover:bg-muted/50 transition border border-border/50">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-sm sm:text-base text-foreground truncate">{project.name}</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">{project.description}</p>
                       {Number(project.budget) > 0 && (
                         <p className="text-xs text-accent mt-1">${Number(project.budget).toLocaleString()}</p>
                       )}
                     </div>
-                    <Badge>{project.status}</Badge>
+                    <Badge className="flex-shrink-0">{project.status}</Badge>
                   </div>
                 </div>
               ))}

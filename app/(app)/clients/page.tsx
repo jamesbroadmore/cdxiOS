@@ -29,14 +29,14 @@ export default function ClientsPage() {
   }, [])
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Clients</h1>
-          <p className="text-muted-foreground mt-1">Manage all your client relationships</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Clients</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Manage all your client relationships</p>
         </div>
-        <Link href="/clients/new">
-          <Button>
+        <Link href="/clients/new" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto">
             <Plus data-icon="inline-start" />
             Add Client
           </Button>
@@ -63,14 +63,14 @@ export default function ClientsPage() {
               </Link>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {clients.map((client) => (
                 <Link key={client.id} href={`/clients/${client.id}`}>
-                  <div className="p-4 rounded-lg hover:bg-muted/50 transition border border-border/50 cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h3 className="font-medium text-foreground">{client.name}</h3>
-                        <div className="flex gap-3 mt-2 text-sm text-muted-foreground">
+                  <div className="p-3 sm:p-4 rounded-lg hover:bg-muted/50 transition border border-border/50 cursor-pointer">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-sm sm:text-base text-foreground truncate">{client.name}</h3>
+                        <div className="flex gap-2 sm:gap-3 mt-2 text-xs sm:text-sm text-muted-foreground flex-wrap">
                           {client.email && (
                             <div className="flex items-center gap-1">
                               <Mail className="w-4 h-4" />

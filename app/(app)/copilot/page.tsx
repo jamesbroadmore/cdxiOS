@@ -131,22 +131,22 @@ export default function CopilotPage() {
       </div>
 
       {!currentConversation ? (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
-            <h2 className="font-semibold text-foreground mb-3">Select an Agent</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <h2 className="font-semibold text-sm sm:text-base text-foreground mb-3">Select an Agent</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {agents.map((agent) => (
                 <Card
                   key={agent.id}
                   className="cursor-pointer hover:border-primary/50 hover:shadow-lg transition bg-card border-border"
                   onClick={() => startConversation(agent)}
                 >
-                  <CardHeader>
-                    <CardTitle className="text-lg">{agent.name}</CardTitle>
-                    <CardDescription>{agent.description}</CardDescription>
+                  <CardHeader className="p-4 sm:p-6">
+                    <CardTitle className="text-base sm:text-lg">{agent.name}</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">{agent.description}</CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <Badge>{agent.role}</Badge>
+                  <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
+                    <Badge className="text-xs">{agent.role}</Badge>
                   </CardContent>
                 </Card>
               ))}
@@ -156,8 +156,8 @@ export default function CopilotPage() {
       ) : (
         <div className="flex flex-col gap-4 flex-1 min-h-0">
           <Card className="bg-card border-border flex flex-col flex-1 min-h-0">
-            <CardHeader className="border-b border-border">
-              <div className="flex items-center justify-between">
+            <CardHeader className="border-b border-border p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
                 <div>
                   <CardTitle>{selectedAgent?.name}</CardTitle>
                   <CardDescription>{selectedAgent?.description}</CardDescription>
@@ -184,13 +184,13 @@ export default function CopilotPage() {
                   {messages.map((msg, i) => (
                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                       <div
-                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                        className={`max-w-[70%] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm ${
                           msg.role === 'user'
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-muted text-foreground border border-border'
                         }`}
                       >
-                        <p className="text-sm">{msg.content}</p>
+                        <p>{msg.content}</p>
                         <p className="text-xs opacity-70 mt-1">
                           {msg.timestamp.toLocaleTimeString()}
                         </p>
@@ -209,7 +209,7 @@ export default function CopilotPage() {
               )}
             </CardContent>
 
-            <div className="border-t border-border p-4 space-y-3">
+            <div className="border-t border-border p-3 sm:p-4 space-y-2 sm:space-y-3">
               <div className="flex gap-2">
                 <Input
                   placeholder="Type your message..."
@@ -221,12 +221,12 @@ export default function CopilotPage() {
                     }
                   }}
                   disabled={sending}
-                  className="bg-card border-border"
+                  className="bg-card border-border text-sm"
                 />
                 <Button
                   onClick={sendMessage}
                   disabled={!input.trim() || sending}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground flex-shrink-0"
                 >
                   {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </Button>
