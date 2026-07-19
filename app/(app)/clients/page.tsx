@@ -35,10 +35,12 @@ export default function ClientsPage() {
           <h1 className="text-3xl font-bold text-foreground">Clients</h1>
           <p className="text-muted-foreground mt-1">Manage all your client relationships</p>
         </div>
-        <Button nativeButton={false} render={<Link href="/clients/new" />}>
-          <Plus data-icon="inline-start" />
-          Add Client
-        </Button>
+        <Link href="/clients/new">
+          <Button>
+            <Plus data-icon="inline-start" />
+            Add Client
+          </Button>
+        </Link>
       </div>
 
       <Card className="bg-card border-border">
@@ -56,9 +58,9 @@ export default function ClientsPage() {
           ) : clients.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">No clients yet. Add your first client to get started.</p>
-              <Button nativeButton={false} render={<Link href="/clients/new" />}>
-                Add Client
-              </Button>
+              <Link href="/clients/new">
+                <Button>Add Client</Button>
+              </Link>
             </div>
           ) : (
             <div className="space-y-3">

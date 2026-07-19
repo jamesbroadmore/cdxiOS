@@ -33,11 +33,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Title and project ID are required' }, { status: 400 })
     }
 
+    const defaultStatus = 'todo'
     const sql = getSql()
     const result = await sql`
       INSERT INTO tasks (user_id, title, description, project_id, priority, status, due_date)
-      VALUES (${user.id}, ${title}, ${description || null}, ${projectId}, ${priority || 'medium'}, ${'todo'}, ${dueDate || null})
-      RETURNING id, title, description, project_id, priority, status, due_date, created_at
+      VALUES (${user.id}, ${title}, ${description ?? null}, ${projectId}, ${priority ?? 'medium'}, ${defaultStatus}, ${dueDate ?? null})
+      RETURNING id, title, description, project_id, priority, status, due_date, created_at, updated_at
     `
 
     return NextResponse.json(result[0], { status: 201 })

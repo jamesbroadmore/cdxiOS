@@ -35,10 +35,12 @@ export default function ProjectsPage() {
           <h1 className="text-3xl font-bold text-foreground">Projects</h1>
           <p className="text-muted-foreground mt-1">Manage all active and completed projects</p>
         </div>
-        <Button nativeButton={false} render={<Link href="/projects/new" />}>
-          <Plus data-icon="inline-start" />
-          New Project
-        </Button>
+        <Link href="/projects/new">
+          <Button>
+            <Plus data-icon="inline-start" />
+            New Project
+          </Button>
+        </Link>
       </div>
 
       <Card className="bg-card border-border">
@@ -56,9 +58,9 @@ export default function ProjectsPage() {
           ) : projects.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">No projects yet. Create your first project to get started.</p>
-              <Button nativeButton={false} render={<Link href="/projects/new" />}>
-                Create Project
-              </Button>
+              <Link href="/projects/new">
+                <Button>Create Project</Button>
+              </Link>
             </div>
           ) : (
             <div className="space-y-3">

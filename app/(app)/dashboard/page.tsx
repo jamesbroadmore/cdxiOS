@@ -79,18 +79,18 @@ export default function DashboardPage() {
           <p className="text-muted-foreground mt-1">Welcome back to your agency</p>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            nativeButton={false}
-            render={<Link href="/clients/new" />}
-          >
-            <Plus data-icon="inline-start" />
-            New Client
-          </Button>
-          <Button nativeButton={false} render={<Link href="/projects/new" />}>
-            <Plus data-icon="inline-start" />
-            New Project
-          </Button>
+          <Link href="/clients/new">
+            <Button variant="outline">
+              <Plus data-icon="inline-start" />
+              New Client
+            </Button>
+          </Link>
+          <Link href="/projects/new">
+            <Button>
+              <Plus data-icon="inline-start" />
+              New Project
+            </Button>
+          </Link>
         </div>
       </div>
 
