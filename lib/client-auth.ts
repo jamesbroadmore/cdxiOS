@@ -77,3 +77,9 @@ export function clearToken(): void {
   if (typeof window === 'undefined') return;
   localStorage.removeItem('access_token');
 }
+
+export function useAuthStore() {
+  return {
+    token: getToken(),
+  };
+}
