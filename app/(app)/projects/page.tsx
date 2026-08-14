@@ -65,18 +65,20 @@ export default function ProjectsPage() {
           ) : (
             <div className="space-y-2 sm:space-y-3">
               {projects.map((project) => (
-                <div key={project.id} className="p-3 sm:p-4 rounded-lg hover:bg-muted/50 transition border border-border/50">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-sm sm:text-base text-foreground truncate">{project.name}</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">{project.description}</p>
-                      {Number(project.budget) > 0 && (
-                        <p className="text-xs text-accent mt-1">${Number(project.budget).toLocaleString()}</p>
-                      )}
+                <Link key={project.id} href={`/projects/${project.id}`} className="block">
+                  <div className="rounded-lg border border-border/50 p-3 transition hover:bg-muted/50 sm:p-4">
+                    <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-4">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="truncate text-sm font-medium text-foreground sm:text-base">{project.name}</h3>
+                        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">{project.description}</p>
+                        {Number(project.budget) > 0 && (
+                          <p className="mt-1 text-xs text-accent">${Number(project.budget).toLocaleString()}</p>
+                        )}
+                      </div>
+                      <Badge className="flex-shrink-0">{project.status}</Badge>
                     </div>
-                    <Badge className="flex-shrink-0">{project.status}</Badge>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
